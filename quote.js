@@ -12,20 +12,24 @@ window.addEventListener("DOMContentLoaded", function() {
   });
 });
 
-// TODO: Modify to use Fetch API
 async function fetchQuotes(topic, count) {
   let url = "https://wp.zybooks.com/quotes.php?topic=" + topic + "&count=" + count;
   let response = await fetch(url);
   
   if (response.ok) {
     let quotes = await response.json();
-
     let html = "";
-    html = "<ol>";
-    for (let c of quotes) {
-      html += `<li>${c.quote} - ${c.source}</li>`;
-    } // for (number requested)
-    html += "</ol>";
+    
+    if (!quotes.error) {
+      html = "<ol>";
+      for (let c of quotes) {
+        html += `<li>${c.quote} - ${c.source}</li>`;
+      } // for (number requested)
+      html += "</ol>";
+    } // if (parsed successfully)
+    else {
+      html += quotes.error;
+    } // else
   
     document.querySelector("#quotes").innerHTML = html;
   } // if (fetch successful)
